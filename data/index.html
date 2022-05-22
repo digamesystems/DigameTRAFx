@@ -1,0 +1,256 @@
+<!DOCTYPE HTML><html>
+
+<head> 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="shortcut icon" href="favicon.ico"/>
+  <link rel="icon"  type="image/ico" href="favicon.ico">
+  <title>%config.deviceName% - (counter)</title>
+</head>
+
+<body> 
+
+    <nav class="navbar">
+      <div class="container">
+      <div class="logo">D&#237game Systems</div>
+        <ul class="nav">
+          <li>
+            <a href="#">Home</a>
+          </li>
+          <li>
+            <a href="#">About</a>
+          </li>
+          <li>
+            <a href="#">Contact
+            </a>
+          </li>
+        </ul>
+      </div>  
+    </nav>  
+
+    <h1>Wireless Trail Counter<br> Interface</h1>
+    <header class="header">
+      <div class="container">     
+        <h2><em> %config.deviceName%</em></h2>
+      </div>
+    </header>
+  
+    <section class="forms">
+
+        <div class="container">
+            
+          <form action="/counterparams">
+            <H3>Counter Parameters</H3>
+
+            <div class="input">
+                <label >Counter #</label>
+                <input type="number" min="1" max="65535" id="counterid" name="counterid" value=%config.counterID%>    
+              </div> 
+
+              <div class="input">  
+                <label >Counter Population</label>
+                <input type="number" min="1" max="4" id="counterpopulation" name="counterpopulation" value=%config.counterPopulation%>
+              </div>
+
+              <div class="input">  
+                <label >Det. Thresh. (1-100&#37;)</label>
+                <input type="number" min="1" max="100" id="residencetime" name="residencetime" value=%config.lidarResidenceTime%>  
+              </div> 
+
+              <div class="input"> 
+              <label >Lane 1 Min (cm)</label>
+                <input type="number" min="0" max="999" id="zone1min" name="zone1min" value=%config.lidarZone1Min%>
+              </div>  
+              
+              <div class="input"> 
+                <label >Lane 1 Max (cm)</label>
+                <input type="number" min="0" max="999" id="zone1max" name="zone1max" value=%config.lidarZone1Max%>
+              </div>  
+              
+            <div class="input"> 
+              <label >Lane 2 Min (cm)</label>
+              <input type="number" min="0" max="999" id="zone2min" name="zone2min" value=%config.lidarZone2Min%>
+            </div>  
+              
+            <div class="input"> 
+              <label >Lane 2 Max (cm)</label>
+              <input type="number" min="0" max="999" id="zone2max" name="zone2max" value=%config.lidarZone2Max%>
+            </div>  
+      
+            <div class="submitbutton">
+              <input type="submit" value="  Submit  ">
+            </div>
+          </form>
+        </div>
+
+
+        <div class="container">
+
+          <form action="/generalparams">
+            <H3>General</H3>
+
+            <div class="input">
+              <label for="devname">Device Name</label>
+              <input type="text" id="devname" name="devname" value="%config.deviceName%">
+            </div>
+            
+            <div class="input">
+            <label>Model</label>
+            <small><em>%MODEL%</em>%MODEL_DESCRIPTION%</small>
+            </div>
+
+            <div class="input">
+              <label>Software Version</label>
+              <small>%SW_VERSION%</small>
+            </div>
+            
+            <div class="input">
+              <label>File System Version</label>
+              <small>%SW_VERSION%</small>
+            </div>
+            
+            <div class="input">
+              <label>Uptime (DDD:HH:MM:SS)</label>
+              <small><span id="uptime">%UPTIME%</span></small>
+            </div>
+            
+            <div class="input">
+              <label for="streaming">USB Streaming</label>
+              <div>
+                <input type="radio" id="true" name="streaming" value="ON" %STREAMING_ON%>            
+                <label for="true"><small>ON</small></label>
+                <input type="radio" id="false" name="streaming" value="OFF" %STREAMING_OFF%>
+                <label for="false"><small>OFF</small></label>
+              </div>
+            </div>
+
+            <div class="input">
+              <label for = "logbootevents">Log Events to SD Card</label>
+              <div>
+                <label for="logbootevents"><small>Reboot</small></label>
+                <input type="checkbox" id="logbootevents" name="logbootevents" value="checked" %config.logBootEvents%>
+              
+                <label for="logcounterevents"><small>Counter</small></label>
+                <input type="checkbox" id="logvehicleevents" name="logvehicleevents" value="checked" %config.logVehicleEvents%>
+              </div>
+            </div>
+    
+            <div class="submitbutton">
+                <a href='/eventlog' class="button">Download Log File</a>
+            </div> 
+
+            <div class="submitbutton">  <a href='/cleareventlog' class="button" onclick="myFunction()">Clear Log File</a>
+            </div>
+            <!--button onclick="myFunction()">Log File Cleared</button-->
+    
+            <script>
+              function myFunction() {
+                alert("Log File Cleared.");
+              }
+            </script>
+            
+            <div class="input">
+              <label for="reboot">Reboot</label>
+              <input type="checkbox" id="reboot" name="reboot" value="true">
+            </div>
+
+            <div class="submitbutton">
+              <input type="submit" value="  Submit  ">
+            </div>
+        </form>
+    
+      </div>
+
+      <div class="container">
+        
+        <form action="/networkparams">
+          <H3>Network</H3>
+            
+          <div class="input">
+            <label>MAC Address</label>
+            <small><em>%MAC_ADDRESS%</em></small>
+          </div>
+          
+          <div class="input">
+            <label for="ssid">Heartbeat Int'val (sec)</label>
+            <input type="number" min="10" max="65534" id="heartbeatinterval" name="heartbeatinterval" value=%config.heartbeatInterval%>            
+          </div>
+          
+          <div class="input">
+            <label for="ssid">SSID</label>
+            <input type="text" id="ssid" name="ssid" value="%config.ssid%">  
+          </div>
+          
+          <div class="input">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" value="%config.password%">
+          </div>
+          
+          <div class="input">
+            <label for="serverurl">Server URL</label>
+          </div>
+          <div class = "input">
+            <input type="text" id="serverurl" name="serverurl" size="44" value="%config.serverURL%">
+          </div>
+          
+          <div class="submitbutton">
+            <input type="submit" value="  Submit  ">
+          </div>
+        </form>
+
+      </div>
+
+    </section>
+
+    <br>
+    <hr>
+
+    <footer>
+      <img class="center" src="Digame_Logo_Full_Color.png" alt="Digame Logo">
+      <p style="text-align:center; font-style:italic ">Copyright 2021, D&#237game Systems. All rights reserved.</p>
+    </footer>
+
+    
+  <script>
+
+    setInterval(myTimer, 100);
+    setInterval(mySecTimer, 500);
+
+    function myTimer() {
+      const d = new Date();
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          items = this.responseText.split(','); 
+          dist = parseFloat(items[0]);
+          count = parseFloat(items[1]);
+          document.getElementById("distance").innerHTML = dist;
+          document.getElementById("vehiclecount").innerHTML = count;  
+        };}
+      xhttp.open("GET", "/distance", true);
+      xhttp.send();
+    }
+
+    function mySecTimer(){
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          uptime = this.responseText;//.split(','); 
+          //uptime = parseFloat(items[0]);
+          document.getElementById("uptime").innerHTML = uptime;  
+        };}
+      xhttp.open("GET", "/uptime", true);
+      xhttp.send();
+    }
+
+    
+  </script>
+
+</body>
+
+</html>

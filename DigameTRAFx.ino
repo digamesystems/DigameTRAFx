@@ -32,8 +32,9 @@
 BluetoothSerial bleUART; // Create a BlueTooth Serial Port Object
 
 // TRAFx IR trail counter pins
-const int TRAFX_RST = 4; // Reset line to the Trafx Module
-const int TRAFX_ENB = 2; // Enable TRAFx UART reset transistor switch
+const int TRAFX_RST = 4; // Reset line to the Trafx Module through transistor switch
+
+//const int TRAFX_ENB = 2; // Enable TRAFx UART reset transistor switch
 
 // Serial Ports
 const int COM0 = 0;
@@ -42,16 +43,43 @@ const int COM2 = 2;
 
 bool passthrough_active = false;
 
+void configureBluetooth();
+
+void set_rtc(int port);
+
+String help();
+String about();
+String main_menu();
+void   show_prompt();
+void   show_help();
+void   show_about();
+void   show_main_menu();
+
+void   process_command(String command, int port);
+void   z_check(char c1);
+
+void   port_print(String s, int port);
+void   ports_print(String s);
+String port_read(int port);
+
+String read_trafx(unsigned long timeout);
+void   reset_trafx();
+void   start_trafx_logging();
+void   download_trafx_data();
+
+void   reboot_counter();
+
+void   set_times();
+
 //****************************************************************************************
 void configureBluetooth(){
 //****************************************************************************************
   debugUART.println(" Bluetooth...");
   bleUART.begin("BlueTrail_" + getShortMACAddress()); // My Bluetooth device name 
-                                                      //  TODO: Provide opportunity to change names. 
+                                                      //  TODO: Provide opportunity to change names
   delay(1000);                                        // Give port time to initalize
     
 }
-
 
 /*
  * RTC /TIME FUNCTIONS
@@ -75,6 +103,7 @@ String get_start_date_time(){
   }
   
   // Start with the year
+  
   message += twoDigits(getRTCYear());
   message += "-";
   message += twoDigits(getRTCMonth()); 
@@ -172,8 +201,6 @@ void set_rtc(int port){
 void show_prompt(){
   String message = "";
   message += getRTCTime() + ">";
-  //message += ">";
-  
   ports_print(message);   
 }
 
@@ -230,7 +257,6 @@ void show_main_menu(){
   message = main_menu();
   ports_print(message);
 }
-
 
 /*
  * SERIAL UTILITY FUNCTIONS
@@ -292,7 +318,6 @@ String read_trafx(unsigned long timeout){
 }
 
 
-
 /*
  * TRAFX FUNCTIONS
  */
@@ -327,7 +352,6 @@ void reset_trafx(){
 
   trafxUART.println("?"); //Invalid command to get its attention
   
-
 }
 
 
@@ -406,6 +430,7 @@ void start_trafx_logging(){
 
 
 void download_trafx_data(){
+  
   String message;
   reset_trafx();
   delay(2000);
@@ -457,14 +482,12 @@ void download_trafx_data(){
 void setup()
 {
   initRTC();
-  //Wire.begin();
   
   // Open serial communications and wait for port to open:
   debugUART.begin(9600);
   while (!Serial) {
     delay(10); // wait for serial port to connect. Needed for Native USB only
   }
-  debugUART.println("Hello.");
 
   // Set up the TRAFX communication and reset the module.
   trafxUART.begin(9600, SERIAL_8N1, 25, 33);
@@ -472,13 +495,10 @@ void setup()
   while (!Serial1) {   
     delay(10);; // wait for serial port to connect. Needed for Native USB only
   }
-  debugUART.println("Hello, Trafx.");
-
   
   // Set up the BLE communication and reset the module.
   configureBluetooth();
   
-
   debugUART.println("Hello, BLE.");
 
   // Initialize the Reset line to TRAFX module
@@ -567,7 +587,8 @@ void loop()
   char c1;
   String c2 ="";
  
-  if (passthrough_active){ // We are talking direcly to the TRAFx counter.
+  if (passthrough_active){ // Passthrough mode is active.  -- We are talking direcly to the TRAFx counter.
+    
     // When data comes in from the TRAFx module, route it to 
     // the console / BLE module.  
     if ( trafxUART.available() ) {
@@ -579,7 +600,7 @@ void loop()
     //When data comes in over the console, process it.
     if (debugUART.available()){
       c1 = debugUART.read();
-      bleUART.print(c1);   // Copy to BLE
+      bleUART.print(c1);                // Copy to BLE
       if (c1!='z') trafxUART.print(c1); // Route to TRAFx
       delay(10);
       z_check(c1);
@@ -588,14 +609,13 @@ void loop()
     //When data comes in over the BLE link, process it. 
     if (bleUART.available()){
       c1 = bleUART.read();
-      debugUART.print(c1); // Copy to Console
+      debugUART.print(c1);              // Copy to Console
       if (c1!='z') trafxUART.print(c1); // Route to TRAFx
       delay(10);
       z_check(c1);
     }
-   
       
-  } else { //Passthrough mode isn't active. -- Talking to the Arduino.
+  } else { // Passthrough mode isn't active. -- Talking to the Arduino.
     
     //When data comes in over the console, process it.
     if (debugUART.available()){
@@ -605,7 +625,6 @@ void loop()
     }
   
     //When data comes in over the BLE link, process it. 
-    
     if (bleUART.available()){
       c2 = bleUART.readStringUntil('\n');
       debugUART.print(c2);
@@ -613,5 +632,5 @@ void loop()
     }
     
   }
-   
+  
 }
